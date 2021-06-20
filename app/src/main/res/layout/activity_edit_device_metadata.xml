@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".module.device.EditDeviceMetadataActivity">
+
+    <include layout="@layout/layout_title" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ffffff"
+        android:text="a"
+        android:textColor="#3fffff" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="#ffffff"
+
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/tv_vehicle_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Name" />
+
+            <ImageView
+                android:id="@+id/iv_vehicle_no_del"
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:paddingStart="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/input_del"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_vehicle_no"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="5dp"
+                android:layout_toLeftOf="@+id/iv_vehicle_no_del"
+                android:background="#0000"
+                android:layout_centerVertical="true"
+                android:textDirection="rtl"
+                android:maxLines="1"
+                android:text="Abhishek"
+                android:textColorHint="#999999"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
+
+        <include layout="@layout/view_line_common" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="#ffffff"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/tv_vehicle_plate_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Vehicle plate number" />
+
+            <ImageView
+                android:id="@+id/iv_vehicle_plate_del"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:paddingStart="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/input_del"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_vehicle_plate_no"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="5dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/iv_vehicle_plate_del"
+                android:background="#0000"
+                android:gravity="center_vertical"
+                android:textDirection="rtl"
+                android:maxLines="1"
+                android:text="Abhishek"
+                android:textColorHint="#999999"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <include layout="@layout/view_line_common" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="#ffffff"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/tv_sim_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="SIM card" />
+
+            <ImageView
+                android:id="@+id/iv_sim_card_del"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:paddingStart="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/input_del"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_sim_card"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="92dp"
+                android:layout_toLeftOf="@+id/iv_sim_card_del"
+                android:background="#0000"
+                android:maxLines="1"
+                android:text="Abhishek"
+                android:textColorHint="#999999"
+                android:textDirection="rtl"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <include layout="@layout/view_line_common" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
+                android:paddingStart="10dp"
+                android:text="Icon" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_vehicle_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                tools:listitem="@layout/edit_device_type_adapter">
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

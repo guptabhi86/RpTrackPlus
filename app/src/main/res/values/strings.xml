@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">RPTrack+</string>
+    <string name="title_monitor">Monitor</string>
+    <string name="title_device">Device</string>
+    <string name="title_notifications">Alert</string>
+    <string name="title_profile">Me</string>
+    <string name="title_activity_device_meta_data">DeviceMetaDataActivity</string>
+    <string name="hello_world">Hello Square World!</string>
+    <dimen name="title_txt_size">@dimen/_9sdp</dimen>
+    <dimen name="data_txt_size">@dimen/_11sdp</dimen>
+    <dimen name="vehicle_man_size">@dimen/_10sdp</dimen>
+    <dimen name="data_txt_large">@dimen/_12sdp</dimen>
+</resources>

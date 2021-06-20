@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.rptrack.plus.alert.AlertSettings" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="setting"
+            type="AlertSettings" />
+
+        <variable
+            name="activity"
+            type="com.rptrack.plus.activity.AlertSettingsActivity" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#efefef"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <include layout="@layout/layout_title" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/view_line_common" />
+
+                <RelativeLayout
+                    android:id="@+id/layout_imei"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@drawable/selector_white_grayd"
+                    android:clickable="true"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="Receive Notification"
+                        android:textColor="#333333" />
+
+                    <Switch
+                        android:id="@+id/sw_receive_notification"
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:checked="@{setting.notification}"
+                        android:onCheckedChanged="@{(button, bool)->setting.setNotification(bool)}"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/jiantou" />
+
+                    <TextView
+                        android:id="@+id/tv_imei"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        android:text=""
+                        android:textColor="#8e8e8e" />
+                </RelativeLayout>
+
+                <View xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="30px"
+                    android:background="#a5a5a5" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_alert_option_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@drawable/selector_white_grayd"
+                    android:clickable="true"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="Alert Option Settings"
+                        android:textColor="#333333" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/jiantou" />
+
+                    <TextView
+                        android:id="@+id/tv_sim_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        android:text=""
+                        android:textColor="#8e8e8e" />
+                </RelativeLayout>
+
+                <View xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="30px"
+                    android:background="#a5a5a5" />
+
+                <RelativeLayout
+                    android:id="@+id/layout_vehicle_number_plate"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@drawable/selector_white_grayd"
+                    android:clickable="true"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="All day"
+                        android:textColor="#333333" />
+
+                    <Switch
+                        android:id="@+id/sw_all_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:checked="@{setting.allDay}"
+                        android:onCheckedChanged="@{(switch, bool)->setting.setAllDay(bool)}"
+                        android:textColor="#8e8e8e" />
+                </RelativeLayout>
+
+                <include layout="@layout/view_line_common" />
+
+                <LinearLayout
+                    android:id="@+id/ll_all_day"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="@{setting.allDay ? View.GONE : View.VISIBLE}">
+
+                    <RelativeLayout
+                        android:id="@+id/rl_fromTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@drawable/selector_white_grayd"
+                        android:clickable="true"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="Start Time"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:id="@+id/tv_from_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:text="@{setting.fromTime}"
+                            android:textColor="#8e8e8e" />
+                    </RelativeLayout>
+
+                    <include layout="@layout/view_line_common" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_toTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@drawable/selector_white_grayd"
+                        android:clickable="true"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="End Time"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:id="@+id/tv_to_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:text="@{setting.toTime}"
+                            android:textColor="#8e8e8e" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

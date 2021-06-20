@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+
+    android:background="#5E6061">
+
+    <ImageView
+        android:id="@+id/back_icon"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:onClick="onTitleLeftListener"
+        android:padding="@dimen/_12sdp"
+        android:scaleType="centerInside"
+        android:src="@drawable/nav_back"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        app:tint="@color/white" />
+
+    <TextView
+        android:text="@string/app_name"
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="70dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/refresh_icon"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:onClick="onTitleRightListener"
+        android:padding="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/selector_refresh"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        />
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/playback_speed_icon"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+       android:layout_toLeftOf="@id/refresh_icon"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:onClick="onTitleRightListener"
+        android:padding="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/play_back_speed_normal"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        />
+
+    <TextView
+
+        android:text="Edit"
+        android:id="@+id/text_title_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:onClick="onTitleRightTextListener"
+        android:paddingEnd="15dp"
+        android:textColor="#ffffff"
+        android:visibility="gone"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/title_right_two"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@id/text_title_right"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:onClick="onTitleRight1Listener"
+        android:padding="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/selector_play_back_speed"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:visibility="gone" />
+</RelativeLayout>

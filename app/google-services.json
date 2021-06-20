@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1056935519386",
+    "firebase_url": "https://material-login-screen.firebaseio.com",
+    "project_id": "material-login-screen",
+    "storage_bucket": "material-login-screen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056935519386:android:3f65eb8ee7ce0bed0bab23",
+        "android_client_info": {
+          "package_name": "com.rptrack.plus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1056935519386-kqsa2781fgvquo15ss5mp350o4mdpu0p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPd3xyg9vY2oP679ZlFfWLJDiQ90EDg_Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1056935519386-kqsa2781fgvquo15ss5mp350o4mdpu0p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

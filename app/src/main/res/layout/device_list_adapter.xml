@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="#ffffff"
+    android:elevation="1dp"
+    android:layout_margin="1dp"
+    android:clipToPadding="true"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/img_vehicle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/device_car_run" />
+
+    <LinearLayout
+        android:layout_toRightOf="@id/img_vehicle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="35dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="DL 1RS 7607"
+            android:id="@+id/vehicle_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:maxLines="2"
+            android:textColor="#333333" />
+
+        <TextView
+
+            android:text="Static(31min22s)"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="#8e8e8e"
+            android:id="@+id/vehicle_status"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <ImageView
+
+       android:id="@+id/arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_12sdp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/jiantou" />
+</RelativeLayout>
+
+

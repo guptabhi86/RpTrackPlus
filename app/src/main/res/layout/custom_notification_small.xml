@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/_8sdp">
+
+    <ImageView android:id="@+id/image_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/logo" />
+
+    <TextView android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/image_app"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:textColor="@color/black"/>
+
+    <TextView android:id="@+id/subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey"
+        android:layout_toRightOf="@+id/image_app"
+        android:layout_below="@id/title"
+        style="@style/TextAppearance.Compat.Notification.Info" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subject"
+        android:layout_toRightOf="@+id/image_app"
+        android:textColor="@color/grey"
+        style="@style/TextAppearance.Compat.Notification.Line2"/>
+</RelativeLayout>

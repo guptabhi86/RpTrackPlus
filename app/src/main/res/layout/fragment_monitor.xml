@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    tools:context=".module.monitor.MonitorFragment">
+    <include
+        android:id="@+id/title_layout"
+        layout="@layout/layout_title" />
+
+    <fragment
+        android:layout_below="@+id/title_layout"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:background="#80777777"
+            android:orientation="vertical">
+
+            <Chronometer
+                android:id="@+id/refresh_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Refresh In : "
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:layout_alignParentLeft="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/show_vehicle_number"
+
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/selector_vehicle_text" />
+
+            <ImageView
+                android:id="@+id/icon_poi"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/selector_poi" />
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/traffic_listener"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/selector_jiaotong" />
+
+            <ImageView
+                android:id="@+id/change_map_listener"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/selector_weixing" />
+
+            <ImageView
+                android:id="@+id/create_geofence"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/icon_geofence" />
+
+            <ImageView
+                android:id="@+id/near_by"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/icon_map_streetview" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="30dp"
+           android:layout_marginLeft="5dp"
+            android:layout_marginBottom="80dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/my_location"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/selector_my_location" />
+
+            <ImageView
+                android:layout_marginBottom="10dp"
+                android:id="@+id/zoom_up"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:paddingStart="5dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/selector_zoom_up" />
+
+            <ImageView
+                android:id="@+id/zoom_down"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/selector_zoom_down" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="150dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+           android:gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/icon_command"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/icon_map_command" />
+
+            <ImageView
+                android:id="@+id/icon_navigation"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/icon_map_navigation" />
+        </LinearLayout>
+
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/device_prev"
+            android:layout_width="40dp"
+            android:layout_height="109dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:paddingEnd="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/selector_device_left" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/device_next"
+            android:layout_width="40dp"
+            android:layout_height="109dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:paddingStart="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/selector_device_next" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/black"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="#ffffff"
+        android:visibility="gone"
+        />
+
+</RelativeLayout>
