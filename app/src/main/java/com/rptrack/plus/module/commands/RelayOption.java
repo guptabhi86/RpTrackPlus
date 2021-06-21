@@ -51,6 +51,7 @@ public class RelayOption extends VehicleOption {
                 alert.dismiss();
             }
         });
+
         off_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +92,4 @@ public class RelayOption extends VehicleOption {
         });
 
     }
-
-
 }

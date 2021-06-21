@@ -104,6 +104,8 @@ public class HistoryReplayActivity extends AppCompatActivity implements OnMapRea
     private boolean seekPosition = false;
     private boolean start = false;
     int deviceId;
+    boolean isShowMarkerWindow = false;
+    TextView textAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,8 @@ public class HistoryReplayActivity extends AppCompatActivity implements OnMapRea
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         vehicle_number = (TextView) findViewById(R.id.text_title);
+        textAddress = findViewById(R.id.text_address);
+
         ImageView backIcon = (ImageView) findViewById(R.id.back_icon);
         ImageView playback_speed_icon = (ImageView) findViewById(R.id.playback_speed_icon);
         playback_speed_icon.setVisibility(View.VISIBLE);
@@ -208,19 +212,24 @@ public class HistoryReplayActivity extends AppCompatActivity implements OnMapRea
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMaxZoomPreference(18f);
         mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setCompassEnabled(false);
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                marker.hideInfoWindow();
-                if (marker.getTitle() != null) {
 
-                    getAddressFromLatLng(marker, marker.getPosition());
+                if (marker.isInfoWindowShown()) {
+                    isShowMarkerWindow = false;
+                    marker.hideInfoWindow();
+                } else {
+                    isShowMarkerWindow = true;
+                    marker.showInfoWindow();
                 }
                 return true;
             }
         });
 
-        googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+        /*googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker arg0) {
                 return null;
@@ -242,7 +251,8 @@ public class HistoryReplayActivity extends AppCompatActivity implements OnMapRea
                 arg0.setSnippet(address);
                 return v;
             }
-        });
+        });*/
+        googleMap.setInfoWindowAdapter(new CustomAdapter(this));
 
         mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -294,7 +304,7 @@ public class HistoryReplayActivity extends AppCompatActivity implements OnMapRea
                 if (i % 20 == 0) {
                     LatLng from = new LatLng(results.get(i).getLatitude(), results.get(i).getLongitude());
                     LatLng to = new LatLng(results.get(i + 1).getLatitude(), results.get(i + 1).getLongitude());
-                  //  drawPolylineWithArrowEndcap(this, mMap, from, to);
+                    //  drawPolylineWithArrowEndcap(this, mMap, from, to);
                 }
 
             }
@@ -366,10 +376,14 @@ public class HistoryReplayActivity extends AppCompatActivity implements OnMapRea
             marker.setVisible(false);
         }
         marker = markerList.get(i);
-        getAddressFromLatLng(marker, marker.getPosition());
+        CommonUtils.setAddressOnTextView(HistoryReplayActivity.this, marker.getPosition().latitude, marker.getPosition().longitude, textAddress);
+        textAddress.setTextColor(getResources().getColor(R.color.white));
+        textAddress.setVisibility(View.VISIBLE);
+
+        // getAddressFromLatLng(marker, marker.getPosition());
 
 
-        Location location = new Location("Miracle");
+        Location location = new Location("RoadPoint");
         location.setLatitude(latLng1.latitude);
         location.setLongitude(latLng1.longitude);
 
@@ -383,8 +397,14 @@ public class HistoryReplayActivity extends AppCompatActivity implements OnMapRea
                 }
             }
         }
-
         marker.setVisible(true);
+
+        String tagMessage = "Time :" + results.get(i).getTimestamp().replace("T", " ")
+                + "\nSpeed : " + results.get(i).getSpeed() + "KM/H";
+        marker.setTag(tagMessage);
+        if (isShowMarkerWindow) {
+            marker.showInfoWindow();
+        }
         latLng = latLng1;
     }
 
@@ -720,8 +740,34 @@ public class HistoryReplayActivity extends AppCompatActivity implements OnMapRea
             time = animateTime;
             forwarder = farwardedText.getText().toString();
         });
+    }
+
+    final class CustomAdapter implements GoogleMap.InfoWindowAdapter {
+        private final View mWindow;
 
 
+        public CustomAdapter(Activity mContext) {
+            mWindow = mContext.getLayoutInflater().inflate(R.layout.custom_info_adapter, null);
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            render(marker, mWindow);
+            return mWindow;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            return null;
+        }
+
+        private void render(Marker marker, View view) {
+            String datum = (String) marker.getTag();
+
+            String title = marker.getTitle();
+            TextView titleUi = ((TextView) view.findViewById(R.id.title));
+            titleUi.setText(datum);
+        }
     }
 
 

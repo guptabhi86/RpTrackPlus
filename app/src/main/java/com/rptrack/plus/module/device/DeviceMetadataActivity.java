@@ -13,6 +13,10 @@ import com.rptrack.plus.DataModel.DashboardResponse.Datum;
 import com.rptrack.plus.R;
 import com.rptrack.plus.utilities.Constant;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class DeviceMetadataActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView tvVehicleNumber, tvDeviceImei, tvDeviceSim,
@@ -26,15 +30,13 @@ public class DeviceMetadataActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_device_metadata);
         getSupportActionBar().hide();
 
-        ImageView back_icon=findViewById(R.id.back_icon);
-        ImageView refreshIcon=findViewById(R.id.refresh_icon);
-        TextView textTitle=findViewById(R.id.text_title);
-        TextView textTitleRight=findViewById(R.id.text_title_right);
-       back_icon.setOnClickListener(v -> finish());
-       textTitleRight.setOnClickListener(v ->finish());
+        ImageView back_icon = findViewById(R.id.back_icon);
+        ImageView refreshIcon = findViewById(R.id.refresh_icon);
+        TextView textTitle = findViewById(R.id.text_title);
+        TextView textTitleRight = findViewById(R.id.text_title_right);
+        back_icon.setOnClickListener(v -> finish());
+        textTitleRight.setOnClickListener(v -> finish());
         refreshIcon.setVisibility(View.GONE);
-
-
 
 
         tvVehicleNumber = findViewById(R.id.tv_vehicle_number);
@@ -58,27 +60,45 @@ public class DeviceMetadataActivity extends AppCompatActivity implements View.On
         }
 
         Datum datum = (Datum) intent.getSerializableExtra(Constant.INTENT_SERIALIZABLE);
-        if(datum.getStatus()==0){
+        if (datum.getStatus() == 0) {
             datum.getEventdata().setDI1(0);
             datum.getEventdata().setSpeed(0.0);
         }
 
         tvVehicleNumber.setText(datum.getDevice().getVehicleNo());
         tvDeviceImei.setText(datum.getDevice().getDeviceIme());
-        // tvDeviceSim.setText();
-        // tvVehicleNumber.setText();
-        // tvDeviceModel.setText(datum.getDevice().getDeviceType());
-        tvActivationTime.setText(datum.getDevice().getInstallationDate().getCustomerDate());
-        tvActivationTime.setText(datum.getDevice().getNextRechargeDate().getCustomerDate());
+
+
         tvVehicleStatus.setText(datum.getStatusDuration());
-        tvGpsTime.setText(datum.getEventdata().getTimestamp());
+        tvGpsTime.setText(datum.getEventdata().getTimestamp().replace("T", " "));
         textTitle.setText(datum.getDevice().getVehicleNo());
-        // tvLatestUpdate.setText(datum.getEventdata().getTimestamp());
+
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        tvLatestUpdate.setText(simpleDateFormat.format(currentTime));
         tvSpeed.setText(datum.getEventdata().getSpeed() + "Kph");
         tvCoordinate.setText((datum.getEventdata().getLatitude() + "," + datum.getEventdata().getLongitude()));
 
-       if(datum.getEventdata().getDI1()!=null)
-        tvEngineStatus.setText(datum.getEventdata().getDI1() == 1 ? "ON" : "OFF");
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+
+
+        if (datum.getEventdata().getDI1() != null) {
+            tvEngineStatus.setText(datum.getEventdata().getDI1() == 1 ? "ON" : "OFF");
+        }
+
+        if (datum.getDevice().getSimPhoneNumber() != null) {
+            tvDeviceSim.setText(datum.getDevice().getSimPhoneNumber());
+        }
+
+        if (datum.getDevice().getDeviceTypeMeta() != null) {
+            if (datum.getDevice().getDeviceTypeMeta().getName() != null) {
+                tvDeviceModel.setText(datum.getDevice().getDeviceTypeMeta().getName());
+            }
+        }
+
+        tvActivationTime.setText(datum.getActivationDate());
+        tvExpireTime.setText(datum.getNextRechargeDate());
     }
 
     @Override

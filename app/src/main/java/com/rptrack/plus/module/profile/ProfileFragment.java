@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.auth0.android.jwt.JWT;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rptrack.plus.ApplicationActivity;
 import com.rptrack.plus.DataModel.DashboardResponse.DashboardResponse;
@@ -50,6 +51,7 @@ public class ProfileFragment extends Fragment implements ProfileAdapter.ClickedL
     RecyclerView profileRecycler;
     RelativeLayout logoutLayouot;
     DashboardResponse dashboardResponse;
+    private View root;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -62,7 +64,10 @@ public class ProfileFragment extends Fragment implements ProfileAdapter.ClickedL
         TextView textTitle = (TextView) root.findViewById(R.id.text_title);
         TextView versionName = (TextView) root.findViewById(R.id.version_name);
         TextView login_user_name = (TextView) root.findViewById(R.id.login_user_name);
-        login_user_name.setText(Preferences.getPreference(getActivity(), Constant.LOGIN_ID));
+        TextView loginId = (TextView) root.findViewById(R.id.tvLoginId);
+
+
+        login_user_name.setText(Preferences.getPreference(getActivity(), Constant.USER_NAME));
         textTitle.setText("ME");
         ImageView refreshIco = root.findViewById(R.id.refresh_icon);
         ImageView backIcon = root.findViewById(R.id.back_icon);
@@ -72,14 +77,14 @@ public class ProfileFragment extends Fragment implements ProfileAdapter.ClickedL
         apiUtility = ApplicationActivity.getApiUtility();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         ArrayList<TItleIcon> arrayList = new ArrayList<>();
- /*       arrayList.add(new TItleIcon("Schedule for report", R.drawable.icon_setting_task));*/
+        /*       arrayList.add(new TItleIcon("Schedule for report", R.drawable.icon_setting_task));*/
         arrayList.add(new TItleIcon("Generated reports", R.drawable.icon_setting_report));
         arrayList.add(new TItleIcon("Geo-fence", R.drawable.icon_setting_fence));
       /*  arrayList.add(new TItleIcon("POI", R.drawable.icon_setting_poi));
         arrayList.add(new TItleIcon("Message", R.drawable.icon_message));
         arrayList.add(new TItleIcon("General", R.drawable.icon_setting_general));*/
 
-        ProfileAdapter profileAdapter = new ProfileAdapter(getActivity(), arrayList,this);
+        ProfileAdapter profileAdapter = new ProfileAdapter(getActivity(), arrayList, this);
         profileRecycler.setLayoutManager(linearLayoutManager);
         profileRecycler.setAdapter(profileAdapter);
         logoutLayouot = root.findViewById(R.id.logout_layout);
@@ -104,7 +109,6 @@ public class ProfileFragment extends Fragment implements ProfileAdapter.ClickedL
         });
 
         return root;
-
     }
 
     @Override
@@ -164,14 +168,14 @@ public class ProfileFragment extends Fragment implements ProfileAdapter.ClickedL
 
     @Override
     public void clicekPosition(int position) {
-        if (position==0){
-            Intent reportInt=new Intent (getActivity(), ReportActivity.class);
-            reportInt.putExtra(Constant.INTENT_SERIALIZABLE,dashboardResponse);
+        if (position == 0) {
+            Intent reportInt = new Intent(getActivity(), ReportActivity.class);
+            reportInt.putExtra(Constant.INTENT_SERIALIZABLE, dashboardResponse);
             startActivity(reportInt);
-        }else {
+        } else {
 
-                Intent geofencelist = new Intent(getActivity(), GeofenceListActivity.class);
-                startActivity(geofencelist);
+            Intent geofencelist = new Intent(getActivity(), GeofenceListActivity.class);
+            startActivity(geofencelist);
 
         }
     }

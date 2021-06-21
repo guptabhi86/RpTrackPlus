@@ -3,11 +3,13 @@ package com.rptrack.plus.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +31,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -42,6 +46,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.maps.android.ui.IconGenerator;
 import com.rptrack.plus.ApplicationActivity;
@@ -71,7 +76,7 @@ import java.util.Map;
 import static com.rptrack.plus.utilities.CommonUtils.ResizedMarker;
 import static com.rptrack.plus.utilities.CommonUtils.getBearing;
 
-public class TrackingActivity extends AppCompatActivity implements View.OnClickListener{
+public class TrackingActivity extends AppCompatActivity implements View.OnClickListener {
 
     //List<Datum>datum=new ArrayList<>();
     SupportMapFragment mapFragment;
@@ -88,9 +93,9 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
     private Runnable runnable;
     int refreshTime = 10000;
     APIUtility apiUtility;
-
-
-
+    TextView textAddress;
+    Location lastPhoneLocation = null;
+    FusedLocationProviderClient fusedLocationProviderClient;
     /**
      * *************LIve Tracking**************
      */
@@ -121,10 +126,14 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
         getSupportActionBar().hide();
-        context=TrackingActivity.this;
-        TextView textTitle = (TextView)findViewById(R.id.text_title);
-        ImageView title_left=findViewById(R.id.back_icon);
-        ImageView title_right=findViewById(R.id.refresh_icon);
+        context = TrackingActivity.this;
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        getCurrentLocation();
+
+        TextView textTitle = (TextView) findViewById(R.id.text_title);
+        ImageView title_left = findViewById(R.id.back_icon);
+        ImageView title_right = findViewById(R.id.refresh_icon);
         title_left.setVisibility(View.VISIBLE);
         title_right.setVisibility(View.GONE);
         title_left.setOnClickListener(new View.OnClickListener() {
@@ -134,25 +143,40 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        refresh_time=findViewById(R.id.refresh_time);
+        refresh_time = findViewById(R.id.refresh_time);
 
         init();
 
-        Intent intent=getIntent();
-        if (intent!=null){
-            datumList.add((Datum)intent.getSerializableExtra(Constant.INTENT_SERIALIZABLE));
-            selectedVehicle=datumList.get(0).getDevice().getId();
-            defaultLocation=(Datum)intent.getSerializableExtra(Constant.INTENT_SERIALIZABLE);
+        Intent intent = getIntent();
+        if (intent != null) {
+            datumList.add((Datum) intent.getSerializableExtra(Constant.INTENT_SERIALIZABLE));
+            selectedVehicle = datumList.get(0).getDevice().getId();
+            defaultLocation = (Datum) intent.getSerializableExtra(Constant.INTENT_SERIALIZABLE);
             textTitle.setText(datumList.get(0).getDevice().getVehicleNo());
-
         }
 
         handler = new Handler();
         runnable = () -> {
+            getCurrentLocation();
             getDashboardData();
             handler.postDelayed(runnable, refreshTime);
         };
         refreshTime = CommonUtils.setRefreshTime(TrackingActivity.this);
+    }
+
+    void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                Log.d("TAG", "onSuccess: Phone Location" + new Gson().toJson(location));
+                lastPhoneLocation = location;
+            }
+        });
 
     }
 
@@ -163,6 +187,8 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             mapSettings = mMap.getUiSettings();
             mapSettings.setMyLocationButtonEnabled(false);
+            mapSettings.setCompassEnabled(false);
+            mapSettings.setRotateGesturesEnabled(false);
 
             LatLng sydney = new LatLng(-33.852, 151.211);
             googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
@@ -174,11 +200,16 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
             PolylineOptions routes = new PolylineOptions().width(5).color(Color.BLUE);
             polyline_path = mMap.addPolyline(routes);
             updateLocation.post(r);
-            mMap.setOnCameraChangeListener(getCameraChangeListener());
+
+            googleMap.setInfoWindowAdapter(new CustomAdapter(TrackingActivity.this));
+
             /**   **************LIve Tracking Close***************/
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
+                    CommonUtils.setAddressOnTextView(context, marker.getPosition().latitude, marker.getPosition().longitude, textAddress);
+                    textAddress.setTextColor(getResources().getColor(R.color.white));
+                    textAddress.setVisibility(View.VISIBLE);
                     imageViewGeofence.setVisibility(View.VISIBLE);
                     imageViewNearBy.setVisibility(View.VISIBLE);
                     imageViewCommand.setVisibility(View.VISIBLE);
@@ -187,11 +218,12 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
                 }
             });
 
-
-           // setDataAndMap(datumList);
+            if (mMap != null) {
+                enableMyLocation(mMap);
+            }
+            // setDataAndMap(datumList);
         }
     };
-
 
 
     /**
@@ -203,26 +235,72 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
 
 
             if (mMap != null) {
-                    if (defaultLocation != null) {
-                        Toast.makeText(TrackingActivity.this, "Run", Toast.LENGTH_SHORT).show();
-                        LatLng latLng = new LatLng(defaultLocation.getEventdata().getLatitude(), defaultLocation.getEventdata().getLongitude());
-                        marker = mMap.addMarker(new MarkerOptions().position(latLng)
-                                .icon(BitmapDescriptorFactory.fromBitmap(ResizedMarker(context,
-                                        defaultLocation.getSubStatus(),
-                                        defaultLocation.getDevice().getVehicleType()))));
-                        marker.setRotation(defaultLocation.getEventdata().getHeading().floatValue());
-                        marker.setTag(defaultLocation);
-                        markersHasmap.put(defaultLocation.getDevice().getVehicleNo(), marker);
+                if (defaultLocation != null) {
+                    Toast.makeText(TrackingActivity.this, "Run", Toast.LENGTH_SHORT).show();
+                    LatLng latLng = new LatLng(defaultLocation.getEventdata().getLatitude(), defaultLocation.getEventdata().getLongitude());
+                    marker = mMap.addMarker(new MarkerOptions().position(latLng)
+                            .icon(BitmapDescriptorFactory.fromBitmap(ResizedMarker(context,
+                                    defaultLocation.getSubStatus(),
+                                    defaultLocation.getDevice().getVehicleType()))));
+                    marker.setRotation(defaultLocation.getEventdata().getHeading().floatValue());
 
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
-
+                    StringBuffer sb = new StringBuffer("Status: Running(" + defaultLocation.getEventdata().getSpeed() + " Km/h)");
+                    if (defaultLocation.getSubStatus() != 1) {
+                        sb = new StringBuffer("Status: " + defaultLocation.getStatusDuration());
                     }
+                    sb.append("\nTime: " + defaultLocation.getEventdata().getTimestamp().replace("T", " "));
+                    if (null != defaultLocation.getEventdata().getDI1()) {
+                        if (defaultLocation.getEventdata().getDI1().equals(1)) {
+                            sb.append("\nEngine: ON");
+                        } else {
+                            sb.append("\nEngine: OFF");
+                        }
+                    }
+                    if (null != defaultLocation.getEventdata().getEPC()) {
+                        if (defaultLocation.getEventdata().getEPC().equals(1)) {
+                            sb.append("\nExternal Power: ON");
+                        } else {
+                            sb.append("\nExternal Power: OFF");
+                        }
+                    }
+                    /*sb.append("\nDistance: " + CommonUtils.distance(defaultLocation.getEventdata().getLatitude(),
+                            defaultLocation.getEventdata().getLatitude(),
+                            phoneLocation.getLatitude(),
+                            phoneLocation.getLongitude()) + " km");*/
+                    marker.setTag(sb.toString());
 
+
+                    markersHasmap.put(defaultLocation.getDevice().getVehicleNo(), marker);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
+                }
                 return;
             }
             updateLocation.postDelayed(this, 500);
         }
     };
+
+    private String getMarkerInfoWindow(Datum defaultLocation) {
+        StringBuffer sb = new StringBuffer("Status: Running(" + defaultLocation.getEventdata().getSpeed() + " Km/h)");
+        if (defaultLocation.getSubStatus() != 1) {
+            sb = new StringBuffer("Status: " + defaultLocation.getStatusDuration());
+        }
+        sb.append("\nTime: " + defaultLocation.getEventdata().getTimestamp().replace("T", " "));
+        if (null != defaultLocation.getEventdata().getDI1()) {
+            if (defaultLocation.getEventdata().getDI1().equals(1)) {
+                sb.append("\nEngine: ON");
+            } else {
+                sb.append("\nEngine: OFF");
+            }
+        }
+        if (null != defaultLocation.getEventdata().getEPC()) {
+            if (defaultLocation.getEventdata().getEPC().equals(1)) {
+                sb.append("\nExternal Power: ON");
+            } else {
+                sb.append("\nExternal Power: OFF");
+            }
+        }
+        return sb.toString();
+    }
 
     private void UpdatePoints(LatLng newlatlng) {
         List<LatLng> points = polyline_path.getPoints();
@@ -266,6 +344,8 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
                             if (counter == 0) {
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15f));
                             }
+                            marker.setTag(getMarkerInfoWindow(datumList.get(markerPosition)));
+                            marker.showInfoWindow();
                             counter++;
                         }
                     });
@@ -364,31 +444,32 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
     /**
      * **************************LIveTracking Close
      ***********************************/
-    private void init( ){
-        TextView textTitle = (TextView)findViewById(R.id.text_title);
+    private void init() {
+        TextView textTitle = (TextView) findViewById(R.id.text_title);
+        textAddress = findViewById(R.id.text_address);
         textTitle.setText(Preferences.getPreference(TrackingActivity.this, Constant.USER_NAME));
-        ((ImageView)findViewById(R.id.change_map_listener)).setOnClickListener(this::onClick);
-        ((ImageView)findViewById(R.id.traffic_listener)).setOnClickListener(this::onClick);
-        ((ImageView)findViewById(R.id.icon_poi)).setOnClickListener(this::onClick);
-        imageShowVehicleNumber = (ImageView)findViewById(R.id.show_vehicle_number);
+        ((ImageView) findViewById(R.id.change_map_listener)).setOnClickListener(this::onClick);
+        ((ImageView) findViewById(R.id.traffic_listener)).setOnClickListener(this::onClick);
+        ((ImageView) findViewById(R.id.icon_poi)).setOnClickListener(this::onClick);
+        imageShowVehicleNumber = (ImageView) findViewById(R.id.show_vehicle_number);
         imageShowVehicleNumber.setOnClickListener(this::onClick);
         imageShowVehicleNumber.setVisibility(View.GONE);
-        imageViewNearBy = (ImageView)findViewById(R.id.near_by);
+        imageViewNearBy = (ImageView) findViewById(R.id.near_by);
         imageViewNearBy.setOnClickListener(this::onClick);
         imageViewNearBy.setVisibility(View.GONE);
-        imageViewGeofence = ((ImageView)findViewById(R.id.create_geofence));
+        imageViewGeofence = ((ImageView) findViewById(R.id.create_geofence));
         imageViewGeofence.setOnClickListener(this::onClick);
         imageViewGeofence.setVisibility(View.GONE);
-        ((ImageView)findViewById(R.id.my_location)).setOnClickListener(this::onClick);
-        ((ImageView)findViewById(R.id.zoom_up)).setOnClickListener(this::onClick);
-        ((ImageView)findViewById(R.id.zoom_down)).setOnClickListener(this::onClick);
-        imageViewCommand = ((ImageView)findViewById(R.id.icon_command));
+        ((ImageView) findViewById(R.id.my_location)).setOnClickListener(this::onClick);
+        ((ImageView) findViewById(R.id.zoom_up)).setOnClickListener(this::onClick);
+        ((ImageView) findViewById(R.id.zoom_down)).setOnClickListener(this::onClick);
+        imageViewCommand = ((ImageView) findViewById(R.id.icon_command));
         imageViewCommand.setOnClickListener(this::onClick);
         imageViewCommand.setVisibility(View.GONE);
-        ImageView device_next=findViewById(R.id.device_next);
-        ImageView device_prev=findViewById(R.id.device_prev);
+        ImageView device_next = findViewById(R.id.device_next);
+        ImageView device_prev = findViewById(R.id.device_prev);
 
-        imageViewDirection =findViewById(R.id.icon_navigation);
+        imageViewDirection = findViewById(R.id.icon_navigation);
         imageViewDirection.setOnClickListener(this::onClick);
         imageViewDirection.setVisibility(View.GONE);
 
@@ -403,12 +484,51 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(onMapReadyCallback);
         rotateMarkerHandler = new Handler();
-        apiUtility= ApplicationActivity.getApiUtility();
+        apiUtility = ApplicationActivity.getApiUtility();
 
     }
 
+    final class CustomAdapter implements GoogleMap.InfoWindowAdapter {
+        private final View mWindow;
 
+        public CustomAdapter(Activity mContext) {
+            mWindow = mContext.getLayoutInflater().inflate(R.layout.custom_info_adapter, null);
+        }
 
+        @Override
+        public View getInfoWindow(Marker marker) {
+            render(marker, mWindow);
+            return mWindow;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            return null;
+        }
+
+        private void render(Marker marker, View view) {
+            String datum = (String) marker.getTag();
+            if (datum != null) {
+                StringBuilder sb = new StringBuilder(datum);
+                if (lastPhoneLocation != null) {
+                    sb.append("\nDistance: " + getDistance(defaultLocation.getEventdata().getLatitude(),
+                            defaultLocation.getEventdata().getLongitude(),
+                            lastPhoneLocation.getLatitude(),
+                            lastPhoneLocation.getLongitude()) + " km");
+                }
+                String title = marker.getTitle();
+                TextView titleUi = ((TextView) view.findViewById(R.id.title));
+                titleUi.setText(sb.toString());
+            }
+        }
+    }
+
+    double getDistance(double lat1, double lng1, double lat2, double lng2) {
+        if (mMap == null)
+            return 0;
+        enableMyLocation(mMap);
+        return CommonUtils.distance(lat1, lng1, lat2, lng2);
+    }
 
     private Bitmap createCustomMarker(boolean isShowBubble, float rotation, int resource, String _name) {
 
@@ -466,7 +586,7 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
                 mapFragment.getView().findViewById(0x2).performClick();
             }
         } else {
-            PermissionUtils.requestPermission((AppCompatActivity)TrackingActivity.this, LOCATION_PERMISSION_REQUEST_CODE,
+            PermissionUtils.requestPermission((AppCompatActivity) TrackingActivity.this, LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
     }
@@ -543,8 +663,8 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
                 startActivity(mapIntentNavi);
                 break;
             case R.id.icon_command:
-                Intent commands=new Intent(TrackingActivity.this, CommandsActivity.class);
-                commands.putExtra(Constant.INTENT_SERIALIZABLE,defaultLocation);
+                Intent commands = new Intent(TrackingActivity.this, CommandsActivity.class);
+                commands.putExtra(Constant.INTENT_SERIALIZABLE, defaultLocation);
                 startActivity(commands);
                 break;
             case R.id.near_by:

@@ -30,21 +30,20 @@
         android:hardwareAccelerated="true"
         android:usesCleartextTraffic="true">
 
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
         <activity android:name=".module.device.SettingsActivity"></activity>
-        <activity android:name=".module.geofence.GeofenceListActivity" />
-        <activity android:name="com.chase.track.module.geofence.AddGeofenceActivity" />
+        <activity android:name=".module.geofence.GeofenceListActivity" android:hardwareAccelerated="true" />
+        <activity android:name="com.chase.track.module.geofence.AddGeofenceActivity" android:hardwareAccelerated="true" />
         <activity android:name=".module.reportUi.ReportActivity" />
         <activity android:name=".module.notifications.AlertsActivity" />
         <activity android:name=".module.commands.CommandsActivity" />
         <activity android:name=".activity.AlertTypesSettingsActivity" />
         <activity android:name=".activity.AlertSettingsActivity" />
-        <activity android:name=".module.device.HistoryReplayActivity" />
-        <activity android:name=".activity.TrackingActivity" />
+        <activity android:name=".module.device.HistoryReplayActivity" android:hardwareAccelerated="true"/>
+        <activity android:name=".activity.TrackingActivity" android:hardwareAccelerated="true"/>
         <activity android:name=".module.device.DeviceMetadataActivity" />
         <activity android:name=".module.device.DeviceOptionActivity" />
         <activity android:name=".activity.LoginActivity" />
@@ -72,5 +71,4 @@
             android:name="firebase_crashlytics_collection_enabled"
             android:value="true" />
     </application>
-
 </manifest>

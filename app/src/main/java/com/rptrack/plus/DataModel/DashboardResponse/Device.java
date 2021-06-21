@@ -46,6 +46,15 @@ public class Device implements Serializable {
     @Expose
     private String nextRechargeDate;
 
+    @SerializedName("SimPhoneNumber")
+    @Expose
+    private String simPhoneNumber;
+
+
+    @SerializedName("DeviceTypeMeta")
+    @Expose
+    private DeviceType deviceTypeMeta;
+
     public ApplicationDate getNextRechargeDate() {
         return CommonUtils.isValidDate(nextRechargeDate);
     }
@@ -94,4 +103,11 @@ public class Device implements Serializable {
         this.vehicleNo = vehicleNo;
     }
 
+    public String getSimPhoneNumber() {
+        return simPhoneNumber;
+    }
+
+    public DeviceType getDeviceTypeMeta() {
+        return deviceTypeMeta;
+    }
 }

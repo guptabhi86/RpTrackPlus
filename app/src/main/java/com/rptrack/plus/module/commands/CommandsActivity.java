@@ -29,43 +29,42 @@ import java.util.function.Predicate;
 public class CommandsActivity extends AppCompatActivity implements CommandsListAdapter.commandListener, IResult {
     Datum datum;
     APIUtility apiUtility;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commands);
 
         getSupportActionBar().hide();
-        TextView textTitle = (TextView)findViewById(R.id.text_title);
-        TextView textImei = (TextView)findViewById(R.id.text_imei_value);
+        TextView textTitle = (TextView) findViewById(R.id.text_title);
+        TextView textImei = (TextView) findViewById(R.id.text_imei_value);
         ImageView backIcon = (ImageView) findViewById(R.id.back_icon);
         ImageView refreshIcon = (ImageView) findViewById(R.id.refresh_icon);
         refreshIcon.setVisibility(View.GONE);
         backIcon.setOnClickListener(v -> {
             finish();
         });
-        apiUtility= ApplicationActivity.getApiUtility();
-        //     textTitle.setText(Preferences.getPreference(CommandActivity.this, Constant.USER_NAME));
+        apiUtility = ApplicationActivity.getApiUtility();
         textTitle.setText("Commands");
-        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        Intent intent=getIntent();
+        Intent intent = getIntent();
 
-        String[]stringArray={"Stop Engine","Restore Engine"};
-        CommandsListAdapter cmdAdapter =new CommandsListAdapter(this,stringArray,this);
+        String[] stringArray = {"Stop Engine", "Restore Engine"};
+        CommandsListAdapter cmdAdapter = new CommandsListAdapter(this, stringArray, this);
         recyclerView.setAdapter(cmdAdapter);
-        datum=(Datum) intent.getSerializableExtra(Constant.INTENT_SERIALIZABLE);
+        datum = (Datum) intent.getSerializableExtra(Constant.INTENT_SERIALIZABLE);
     }
 
     @Override
     public void commandd(String label, int position) {
-        if (position==0){
-
-            new VehicleFactory().CreateBuilderObject(this, 1, this, datum,1).showDialog();
-            // RELAYRequest(Preferences.getPreference(this,Constant.FCM_REGID), datum.getDevice().getId(), 1);
-        }else {
-          //  RELAYRequest(Preferences.getPreference(this,Constant.FCM_REGID), datum.getDevice().getId(), 2);
-            new VehicleFactory().CreateBuilderObject(this, 1, this, datum,2).showDialog();
+        if (position == 0) {
+            // new VehicleFactory().CreateBuilderObject(this, 1, this, datum, 1).showDialog();
+            RELAYRequest("", datum.getDevice().getId(), 1);
+        } else {
+            // new VehicleFactory().CreateBuilderObject(this, 1, this, datum, 2).showDialog();
+            RELAYRequest("", datum.getDevice().getId(), 2);
         }
     }
 
@@ -73,7 +72,6 @@ public class CommandsActivity extends AppCompatActivity implements CommandsListA
     public void Response(Object data, int id) {
 
     }
-
 
     void RELAYRequest(String fcmToken, int deviceId, int commandType) {
         RelayRequest relayRequest = new RelayRequest(fcmToken, deviceId, commandType);
@@ -93,7 +91,6 @@ public class CommandsActivity extends AppCompatActivity implements CommandsListA
                 CommonUtils.alert(CommandsActivity.this, string);
             }
         });
-
     }
 
 }

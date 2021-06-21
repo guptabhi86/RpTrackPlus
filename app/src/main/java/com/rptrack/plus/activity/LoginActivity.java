@@ -11,17 +11,14 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.BuildConfig;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rptrack.plus.ApplicationActivity;
-import com.rptrack.plus.BuildConfig;
 import com.rptrack.plus.DataModel.error_response.ErrorResponse;
 import com.rptrack.plus.DataModel.login.LoginBaseResponse;
 import com.rptrack.plus.DataModel.login.LoginRequest;
@@ -33,13 +30,13 @@ import com.rptrack.plus.utilities.Preferences;
 
 import static com.rptrack.plus.utilities.CommonUtils.isValidPassword;
 
-public class LoginActivity extends AppCompatActivity  {
+public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passEditText;
-    TextView forgetPassword,versionName;
+    TextView forgetPassword, versionName;
     ImageView close_icon, img_show_pass;
     TextView submit;
-  //  CheckBox rememberMe;
+    //  CheckBox rememberMe;
     APIUtility apiUtility;
     RelativeLayout linearLayout;
 
@@ -54,17 +51,15 @@ public class LoginActivity extends AppCompatActivity  {
         submit = (TextView) findViewById(R.id.login_btn);
         versionName = (TextView) findViewById(R.id.version_name);
 
-
-
         try {
             PackageInfo pInfo = LoginActivity.this.getPackageManager().getPackageInfo(LoginActivity.this.getPackageName(), 0);
             String version = pInfo.versionName;
-            versionName.setText("Version Name: "+ version);
+            versionName.setText("Version Name: " + version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
 
-       // rememberMe = (CheckBox) findViewById(R.id.remember_me);
+        // rememberMe = (CheckBox) findViewById(R.id.remember_me);
         // img_show_pass=(ImageView)findViewById(R.id.img_show_pass);
         submit.setOnClickListener(clickListener);
 
@@ -73,16 +68,13 @@ public class LoginActivity extends AppCompatActivity  {
             startActivity(intventryIntent);
             finish();
         }
-        if (!Preferences.getPreference(LoginActivity.this,Constant.USER_NAME).isEmpty()){
-            emailEditText.setText(Preferences.getPreference(LoginActivity.this,Constant.USER_NAME));
-            passEditText.setText(Preferences.getPreference(LoginActivity.this,Constant.LOGIN_PASSWORD));
+        if (!Preferences.getPreference(LoginActivity.this, Constant.USER_NAME).isEmpty()) {
+            emailEditText.setText(Preferences.getPreference(LoginActivity.this, Constant.USER_NAME));
+            passEditText.setText(Preferences.getPreference(LoginActivity.this, Constant.LOGIN_PASSWORD));
         }
-
-
     }
 
-
-    View.OnClickListener clickListener=new View.OnClickListener() {
+    View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Validation();
@@ -115,7 +107,6 @@ public class LoginActivity extends AppCompatActivity  {
             Log.d("FCMToken", refreshedToken + "h");
             LoginRequestService(text_email, text_password, refreshedToken);
         }
-
     }
 
 

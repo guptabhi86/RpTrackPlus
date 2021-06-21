@@ -2,6 +2,7 @@ package com.rptrack.plus.module.monitor;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -73,7 +74,7 @@ public class MonitorFragment extends Fragment implements View.OnClickListener {
     SupportMapFragment mapFragment;
     GoogleMap mMap = null;
     UiSettings mapSettings;
-    LatLngBounds.Builder  builder = new LatLngBounds.Builder();
+    LatLngBounds.Builder builder = new LatLngBounds.Builder();
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean permissionDenied = false;
     ImageView imageViewGeofence, imageViewNearBy, imageViewCommand, imageViewDirection, imageShowVehicleNumber, deviceNext, devicePrev;
@@ -131,12 +132,17 @@ public class MonitorFragment extends Fragment implements View.OnClickListener {
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             mapSettings = mMap.getUiSettings();
             mapSettings.setMyLocationButtonEnabled(false);
+            mapSettings.setRotateGesturesEnabled(false);
+            mapSettings.setCompassEnabled(false);
+
             LatLng sydney = new LatLng(-33.852, 151.211);
             googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
             //  mapSettings.setZoomControlsEnabled(true);
 
             mMap = googleMap;
-            clickedMarkerIndex=0;
+            clickedMarkerIndex = 0;
+
+            mMap.setInfoWindowAdapter(new CustomAdapter(getActivity()));
 
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @SuppressLint("PotentialBehaviorOverride")
@@ -155,9 +161,7 @@ public class MonitorFragment extends Fragment implements View.OnClickListener {
                 }
             });
 
-
-
-            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+           /* googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
                 public View getInfoWindow(Marker arg0) {
                     return null;
@@ -174,17 +178,16 @@ public class MonitorFragment extends Fragment implements View.OnClickListener {
                         arg0.setVisible(false);
                     } else {
                         arg0.setVisible(true);
-                        tvLat.setText(datum.getDevice().getVehicleNo() + "\nTime:"+datum.getEventdata().getTimestamp());
+                        tvLat.setText(datum.getDevice().getVehicleNo() + "\nTime:" + datum.getEventdata().getTimestamp());
                     }
 
                     return v;
                 }
-            });
+            });*/
 
-            if(dashboardResponse!=null){
+            if (dashboardResponse != null) {
                 setDataAndMap(dashboardResponse.getResult().getData());
-            }
-            else {
+            } else {
 
             }
 
@@ -227,10 +230,9 @@ public class MonitorFragment extends Fragment implements View.OnClickListener {
                 startActivity(mapIntentNavi);
                 break;
             case R.id.icon_command:
-                Intent commands=new Intent(getActivity(), CommandsActivity.class);
-                commands.putExtra(Constant.INTENT_SERIALIZABLE,datum);
+                Intent commands = new Intent(getActivity(), CommandsActivity.class);
+                commands.putExtra(Constant.INTENT_SERIALIZABLE, datum);
                 startActivity(commands);
-
                 break;
             case R.id.device_next:
                 markerArrayList.get(clickedMarkerIndex).showInfoWindow();
@@ -295,7 +297,7 @@ public class MonitorFragment extends Fragment implements View.OnClickListener {
                 if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.O) {
                     LatLngBounds bounds = builder.build();
                     mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150));
-                }else {
+                } else {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLatLng, 7.0f));
                 }
             }
@@ -488,5 +490,34 @@ public class MonitorFragment extends Fragment implements View.OnClickListener {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+}
 
+final class CustomAdapter implements GoogleMap.InfoWindowAdapter {
+    private final View mWindow;
+
+
+    public CustomAdapter(Activity mContext) {
+        mWindow = mContext.getLayoutInflater().inflate(R.layout.custom_info_adapter, null);
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        render(marker, mWindow);
+        return mWindow;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return null;
+    }
+
+    private void render(Marker marker, View view) {
+        Datum datum = (Datum) marker.getTag();
+
+        TextView titleUi = ((TextView) view.findViewById(R.id.title));
+        titleUi.setText(datum.getDevice().getVehicleNo()
+                + "\nTime :" + datum.getEventdata().getTimestamp().replace("T", " ")
+                + "\nStatus : " + datum.getStatusDuration()
+                + "\nSpeed : " + datum.getEventdata().getSpeed());
+    }
 }
